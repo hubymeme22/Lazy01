@@ -1,6 +1,5 @@
 from .libraries.Strings import *
 from .libraries.HTTPInterceptor import HTTPInterceptor
-from scapy.all import Packet
 
 import argparse
 import os
@@ -33,6 +32,7 @@ def start():
     ArgParser.add_argument('PORT', type=int, help=PORT_DESCRIPTIOM)
 
     ArgParser.add_argument('-i', '--intercept', action='store_true', help=INTERCEPT_DESCRIPTION)
+    ArgParser.add_argument('-u', '--unique', action='store_true', help=UNIQUE_DESCRIPTION)
     ArgParser.add_argument('-v', '--verbose', action='store_true', help=VERBOSE_DESCRIPTION)
 
     arguments = ArgParser.parse_args()

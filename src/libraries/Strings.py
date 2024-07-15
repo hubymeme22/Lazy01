@@ -2,9 +2,9 @@ from colorama import init, Fore, Style
 
 APP_DESCRIPTION = 'This app is a simple app for intercepting and analyzing API endpoints for scanning A01:2021 OWASP\'s Broken Authentication common vulnerability'
 VERBOSE_DESCRIPTION = 'Increase the console output verbosity'
-HOST_DESCRIPTION = 'The host IP/Domain to intercept and listen to'
 PORT_DESCRIPTIOM = 'The destination port to intercept and listen to'
 INTERCEPT_DESCRIPTION = 'Starts interception of HTTP packets'
+UNIQUE_DESCRIPTION = 'Ignores the same http requests'
 
 init()
 class ConsoleStr:
