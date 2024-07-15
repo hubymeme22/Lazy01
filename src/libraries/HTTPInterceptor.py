@@ -1,6 +1,8 @@
 from scapy.all import sniff, Packet, Raw
 from scapy.layers.inet import TCP, IP
 from scapy.layers.inet6 import IPv6
+
+from .HTTPTool import SimpleHTTPRequestParser
 from .Strings import ConsoleStr
 
 # a simple class for intercepting http packets
@@ -14,8 +16,10 @@ class HTTPInterceptor:
         if (self.loadedTCPCheck(httpPacket)):
             if (self.targetCheck(httpPacket)):
                 ConsoleStr.green(f'[{self.count}] ' + str(httpPacket))
-            else:
-                ConsoleStr.blue(f'[{self.count}] ' + str(httpPacket))
+
+                HTTPPacket = SimpleHTTPRequestParser(httpPacket[Raw].load.decode())
+                self.verbose and ConsoleStr.violet(f'[Request] {HTTPPacket.method} {HTTPPacket.path}')
+
             self.count += 1
 
     def loadedTCPCheck(self, httpPacket: Packet):
