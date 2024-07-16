@@ -1,3 +1,4 @@
+import pathlib
 import pickle
 import uuid
 import os
@@ -45,17 +46,28 @@ to storage, this class can be used to save, load, and track
 routes that are saved
 '''
 class HTTPMapper:
-    def __init__(self, unique=False) -> None:
+    def __init__(self, unique: bool=False) -> None:
+        self.fname = f'cache/{uuid.uuid4().hex}.cache'
         self.uniqueFlag = unique
         self.pathMap = {}
-        self.id = str(uuid.uuid4().hex)
+
+    def directCache(self, request: SimpleHTTPRequestParser):
+        pathlib.Path(self.fname).touch()
+        pickle.dump([request], open(self.fname, 'wb'))
+        self.pathMap[request.method + request.path] = True
+
+    def directAppendCache(self, request: SimpleHTTPRequestParser):
+        requestList: list = pickle.load(open(self.fname, 'rb'))
+        requestList.append(request)
+        self.pathMap[request.method + request.path] = True
+        pickle.dump(requestList, open(self.fname, 'wb'))
 
     def cacheRequest(self, request: SimpleHTTPRequestParser):
         (not os.path.isdir('cache')) and os.mkdir('cache')
         if (self.uniqueFlag):
-            if (request.path not in self.pathMap):
-                fname = f'cachce/{self.id}.cache'
-                if (os.path.isfile(fname)):
-                    fp = open(fname, 'wb')
-                    pickle.dump([request], fp)
-                    fp.close()
+            if ((request.method + request.path) not in self.pathMap):
+                (os.path.isfile(self.fname)) and self.directAppendCache(request)
+                (not os.path.isfile(self.fname)) and self.directCache(request)
+            return
+        (os.path.isfile(self.fname)) and self.directAppendCache(request)
+        (not os.path.isfile(self.fname)) and self.directCache(request)

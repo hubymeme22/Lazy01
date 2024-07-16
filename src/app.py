@@ -17,7 +17,7 @@ class Lazy01:
                 exit()
 
             # start intercepting http traffic
-            Interceptor = HTTPInterceptor(self.port, verbose=self.args.verbose)
+            Interceptor = HTTPInterceptor(self.port, verbose=self.args.verbose, unique=self.args.unique)
             Interceptor.intercept()
 
         else:

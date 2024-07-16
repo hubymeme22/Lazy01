@@ -2,12 +2,13 @@ from scapy.all import sniff, Packet, Raw
 from scapy.layers.inet import TCP, IP
 from scapy.layers.inet6 import IPv6
 
-from .HTTPTool import SimpleHTTPRequestParser
+from .HTTPTool import SimpleHTTPRequestParser, HTTPMapper
 from .Strings import ConsoleStr
 
 # A simple class for intercepting http packets
 class HTTPInterceptor:
-    def __init__(self, port: int, verbose: bool=False) -> None:
+    def __init__(self, port: int, verbose: bool=False, unique: bool=False) -> None:
+        self.httpPacketState = HTTPMapper(unique)
         self.verbose = verbose
         self.port = port
         self.count = 1
@@ -16,12 +17,9 @@ class HTTPInterceptor:
         if (self.loadedTCPCheck(httpPacket)):
             if (self.targetCheck(httpPacket)):
                 ConsoleStr.green(f'[{self.count}] ' + str(httpPacket))
-
                 HTTPPacket = SimpleHTTPRequestParser(httpPacket[Raw].load.decode())
                 self.verbose and ConsoleStr.violet(f'[Request] {HTTPPacket.method} {HTTPPacket.path}')
-
-                # TODO: write append the packet recieved to save memory
-                # TODO: check if unique flag is used here
+                self.httpPacketState.cacheRequest(HTTPPacket)
             self.count += 1
 
     def loadedTCPCheck(self, httpPacket: Packet):
@@ -43,7 +41,6 @@ class HTTPInterceptor:
                 fileName += '.bka'
 
             # TODO: save file here
-            ConsoleStr.green(f'[+] Saved as {fileName}')
-            print()
+            ConsoleStr.green(f'[+] Saved as {fileName}', end='\n\n')
         else:
             ConsoleStr.yellow('[*] Quitting...')
