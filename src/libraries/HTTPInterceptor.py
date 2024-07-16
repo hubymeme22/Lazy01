@@ -35,12 +35,11 @@ class HTTPInterceptor:
         sniff(iface='lo', filter='tcp', prn=self.__callbackTemplate)
 
         ConsoleStr.blue('\n[*] Intercepting stopped...')
-        if (input('   Save as new session? [y/N]: ') == 'y'):
-            fileName = input('   Enter filename (*.bka) : ')
+        if (input('Save as new session? [y/N]: ') == 'y'):
+            fileName = input('Enter filename (*.bka) : ')
             if (len(fileName.split('.')) <= 1):
                 fileName += '.bka'
-
-            # TODO: save file here
+                self.httpPacketState.export(fileName)
             ConsoleStr.green(f'[+] Saved as {fileName}', end='\n\n')
         else:
             ConsoleStr.yellow('[*] Quitting...')

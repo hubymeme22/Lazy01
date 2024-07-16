@@ -1,3 +1,4 @@
+from .Strings import ConsoleStr
 import pathlib
 import pickle
 import uuid
@@ -71,3 +72,14 @@ class HTTPMapper:
             return
         (os.path.isfile(self.fname)) and self.directAppendCache(request)
         (not os.path.isfile(self.fname)) and self.directCache(request)
+
+    def export(self, filename: str):
+        os.replace(self.fname, filename)
+
+    def showSummary(self, filename: str, filter=''):
+        requestList: list[SimpleHTTPRequestParser] = pickle.load(open(filename, 'rb'))
+        for request in requestList:
+            if (filter == ''):
+                ConsoleStr.violet(f'{request.method} {request.path}')
+                continue
+            (request.method == filter) and ConsoleStr.violet(f'{request.method} {request.path}')
