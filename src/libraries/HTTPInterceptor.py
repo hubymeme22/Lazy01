@@ -5,7 +5,7 @@ from scapy.layers.inet6 import IPv6
 from .HTTPTool import SimpleHTTPRequestParser
 from .Strings import ConsoleStr
 
-# a simple class for intercepting http packets
+# A simple class for intercepting http packets
 class HTTPInterceptor:
     def __init__(self, port: int, verbose: bool=False) -> None:
         self.verbose = verbose
@@ -20,6 +20,8 @@ class HTTPInterceptor:
                 HTTPPacket = SimpleHTTPRequestParser(httpPacket[Raw].load.decode())
                 self.verbose and ConsoleStr.violet(f'[Request] {HTTPPacket.method} {HTTPPacket.path}')
 
+                # TODO: write append the packet recieved to save memory
+                # TODO: check if unique flag is used here
             self.count += 1
 
     def loadedTCPCheck(self, httpPacket: Packet):
@@ -30,5 +32,18 @@ class HTTPInterceptor:
         return httpPacket[TCP].dport == self.port
 
     def intercept(self):
-        ConsoleStr.green(f'[+] Started HTTP Traffic interception for port: {self.port}', end='\n\n')
+        ConsoleStr.green(f'[+] Started HTTP Traffic interception for port: {self.port}')
+        print('Press CTRL + c to stop intercepting...', end='\n\n')
         sniff(iface='lo', filter='tcp', prn=self.__callbackTemplate)
+
+        ConsoleStr.blue('\n[*] Intercepting stopped...')
+        if (input('   Save as new session? [y/N]: ') == 'y'):
+            fileName = input('   Enter filename (*.bka) : ')
+            if (len(fileName.split('.')) <= 1):
+                fileName += '.bka'
+
+            # TODO: save file here
+            ConsoleStr.green(f'[+] Saved as {fileName}')
+            print()
+        else:
+            ConsoleStr.yellow('[*] Quitting...')
