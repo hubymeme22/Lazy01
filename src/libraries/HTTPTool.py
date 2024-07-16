@@ -1,6 +1,15 @@
+import pickle
+import uuid
+import os
+
+'''
+SimpleHTTPRequestParser
+
+- A simple class for parsing http protocol, specifically made
+to retrieve method, host, path, and header contents
+'''
 class SimpleHTTPRequestParser:
     def __init__(self, request: str) -> None:
-        self.request = request
         self.errorFlag = None
         self.method = ''
         self.host = ''
@@ -9,7 +18,8 @@ class SimpleHTTPRequestParser:
 
         try:
             # filter to separate body from data
-            requestDetails = request.replace('\r', '').split('\n\n')
+            self.raw = request.replace('\r', '')
+            requestDetails = self.raw.split('\n\n')
             requestUri = requestDetails[0].split('\n')
             requestPath = requestUri[0].split(' ')
 
@@ -26,3 +36,26 @@ class SimpleHTTPRequestParser:
                 })
         except Exception as e:
             self.errorFlag = e
+
+'''
+HTTPMapper
+
+- Class made for saving instances of SimpleHTTPRequest Parser
+to storage, this class can be used to save, load, and track
+routes that are saved
+'''
+class HTTPMapper:
+    def __init__(self, unique=False) -> None:
+        self.uniqueFlag = unique
+        self.pathMap = {}
+        self.id = str(uuid.uuid4().hex)
+
+    def cacheRequest(self, request: SimpleHTTPRequestParser):
+        (not os.path.isdir('cache')) and os.mkdir('cache')
+        if (self.uniqueFlag):
+            if (request.path not in self.pathMap):
+                fname = f'cachce/{self.id}.cache'
+                if (os.path.isfile(fname)):
+                    fp = open(fname, 'wb')
+                    pickle.dump([request], fp)
+                    fp.close()
