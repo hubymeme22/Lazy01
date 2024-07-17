@@ -6,8 +6,10 @@ INTERCEPT_DESCRIPTION = 'Starts interception of HTTP packets on specified port'
 UNIQUE_DESCRIPTION = 'Ignores the same http requests'
 PACKET_LOAD_DESCRIPTION = 'Loads the saved recorded packets'
 PACKET_SUMMARY_DESCRIPTION = 'Summarizes the loaded packets'
-PACKET_METHOD_DESCRIPTION = 'Filters method from packet summary'
+PACKET_METHOD_DESCRIPTION = 'Filters method from the packet loaded'
 PACKET_READ_DESCRIPTION = 'Reads the specific contents of the packet'
+TEST_REPEAT_DESCRIPTION = 'Tests all the loaded packets and repeats the request'
+
 init()
 class ConsoleStr:
     def g(string: str=''):
@@ -59,5 +61,5 @@ ASCII_ART = ASCII_ART.replace(r'\ \  \\\  \|/ \ \  \ ', ConsoleStr.y(r'\ \  \\\ 
 ASCII_ART = ASCII_ART.replace(r'\ \  \\\  \   \ \  \ ', ConsoleStr.y(r'\ \  \\\  \   \ \  \ ') + Fore.GREEN)
 ASCII_ART = ASCII_ART.replace(' \\ \\_______\\   \\ \\__\\', ConsoleStr.y(' \\ \\_______\\   \\ \\__\\') + Fore.GREEN)
 ASCII_ART = ASCII_ART.replace('\\|_______|    \\|__|', ConsoleStr.y('\\|_______|    \\|__|') + Fore.GREEN)
-# ASCII_ART += ConsoleStr.v('HowHowBurry@2024') + '\n'
+ASCII_ART += ConsoleStr.g('Author: ') + ConsoleStr.v('HowHowBurry@2024') + '\n'
 ASCII_ART += ConsoleStr.y('Disclaimer: ') + 'Any use of this application for purposes other than education and research is not endorsed. The developers and contributors of this software are not liable for any misuse or illegal activities performed with this application.'

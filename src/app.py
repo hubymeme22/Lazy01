@@ -1,5 +1,6 @@
 from .libraries.Strings import *
 from .libraries.HTTPInterceptor import HTTPInterceptor, HTTPMapper
+from .libraries.HTTPTests import HTTPRepeaterTest
 
 import argparse
 import os
@@ -27,6 +28,11 @@ class Lazy01:
 
             if (self.args.packet_read >= 0):
                 Mapper.showPacketDetail(loadedPackets, self.args.packet_read)
+
+            if (self.args.test_repeat):
+                Repeater = HTTPRepeaterTest(loadedPackets)
+                Repeater.forwardAll()
+
             print('[*] Done.')
             print()
 
@@ -47,10 +53,25 @@ def start():
     # packet actions
     ArgParser.add_argument('-pL', '--packet-load', metavar='FILE_PATH', type=str, help=PACKET_LOAD_DESCRIPTION)
     ArgParser.add_argument('-pM', '--packet-method', metavar='HTTP_METHOD', type=str, default='', help=PACKET_METHOD_DESCRIPTION)
-    ArgParser.add_argument('-pR', '-pD', '--packet-read', metavar='PACKET_ID', type=int , default=-1, help=PACKET_METHOD_DESCRIPTION)
+    ArgParser.add_argument('-pR', '-pD', '--packet-read', metavar='PACKET_ID', type=int , default=-1, help=PACKET_READ_DESCRIPTION)
     ArgParser.add_argument('-pS', '--packet-summary', action='store_true', help=PACKET_SUMMARY_DESCRIPTION)
 
     # test actions
+    ArgParser.add_argument('-tR', '--test-repeat', action='store_true', help=TEST_REPEAT_DESCRIPTION)
 
     arguments = ArgParser.parse_args()
     Lazy01(arguments).execute()
+
+    # # test actions
+    # ArgParser.add_argument('-tO', '--test-output')
+    # ArgParser.add_argument('-tA', '--test-specific')
+    # ArgParser.add_argument('-tv', '--test-verbose')
+
+    # # test filters
+    # ArgParser.add_argument('-fC', '--filter-code')
+    # ArgParser.add_argument('-fE', '--filter-code')
+
+    # # modification actions
+    # ArgParser.add_argument('-sA', '--set-authority')
+    # ArgParser.add_argument('-sC', '--set-cookie')
+
