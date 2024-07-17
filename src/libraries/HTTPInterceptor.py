@@ -35,7 +35,13 @@ class HTTPInterceptor:
         sniff(iface='lo', filter='tcp', prn=self.__callbackTemplate)
 
         ConsoleStr.blue('\n[*] Intercepting stopped...')
-        if (input('Save as new session? [y/N]: ') == 'y'):
+        sessionSave = ''
+        while True:
+            sessionSave = input('Save as new session? [y/N]: ')
+            if (sessionSave == 'y' or sessionSave == 'n'):
+                break
+
+        if (sessionSave == 'y'):
             fileName = input('Enter filename (*.bka) : ')
             if (len(fileName.split('.')) <= 1):
                 fileName += '.bka'

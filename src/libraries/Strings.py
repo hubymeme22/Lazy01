@@ -6,7 +6,7 @@ INTERCEPT_DESCRIPTION = 'Starts interception of HTTP packets on specified port'
 UNIQUE_DESCRIPTION = 'Ignores the same http requests'
 PACKET_SUMMARY_DESCRIPTION = 'Prints the summary of the saved packet'
 PACKET_METHOD_DESCRIPTION = 'Filters method from packet summary'
-
+PACKET_READ_DESCRIPTION = 'Reads the specific contents of the packet'
 init()
 class ConsoleStr:
     def g(string: str=''):

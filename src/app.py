@@ -20,9 +20,14 @@ class Lazy01:
 
         elif (self.args.packet_summary):
             ConsoleStr.green('=================================')
-            ConsoleStr.green('Packets retrieved:')
+            ConsoleStr.green('Packet(s) retrieved:')
             ConsoleStr.green('=================================')
-            HTTPMapper().showSummary(self.args.packet_summary, filter=self.args.packet_method)
+
+            Mapper = HTTPMapper()
+            if (not self.args.packet_read):
+                Mapper.showSummary(self.args.packet_summary, filter=self.args.packet_method)
+            else:
+                Mapper.showPacketDetail(self.args.packet_summary, self.args.packet_read)
             print('[*] Done.')
 
         else:
@@ -39,8 +44,9 @@ def start():
     ArgParser.add_argument('-v', '--verbose', action='store_true', help=VERBOSE_DESCRIPTION)
 
     ArgParser.add_argument('-i', '--intercept', type=int, default=None, help=INTERCEPT_DESCRIPTION)
-    ArgParser.add_argument('-pS', '--packet-summary', type=str, help=PACKET_SUMMARY_DESCRIPTION)
-    ArgParser.add_argument('-pM', '--packet-method', type=str, default='', help=PACKET_METHOD_DESCRIPTION)
+    ArgParser.add_argument('-pS', '--packet-summary', metavar='FILE_PATH', type=str, help=PACKET_SUMMARY_DESCRIPTION)
+    ArgParser.add_argument('-pM', '--packet-method', metavar='HTTP_METHOD', type=str, default='', help=PACKET_METHOD_DESCRIPTION)
+    ArgParser.add_argument('-pR', '--packet-read', metavar='SUMMARY_ID', type=int , default=0, help=PACKET_METHOD_DESCRIPTION)
 
     arguments = ArgParser.parse_args()
     Lazy01(arguments).execute()

@@ -78,8 +78,15 @@ class HTTPMapper:
 
     def showSummary(self, filename: str, filter=''):
         requestList: list[SimpleHTTPRequestParser] = pickle.load(open(filename, 'rb'))
-        for request in requestList:
+        for id, request in enumerate(requestList):
             if (filter == ''):
-                ConsoleStr.violet(f'{request.method} {request.path}')
+                ConsoleStr.violet(f'[Request id={id}] {request.method} {request.path}')
                 continue
-            (request.method == filter) and ConsoleStr.violet(f'{request.method} {request.path}')
+            (request.method == filter) and ConsoleStr.violet(f'[Request id={id}] {request.method} {request.path}')
+
+    def showPacketDetail(self, filename: str, id: int):
+        requestList: list[SimpleHTTPRequestParser] = pickle.load(open(filename, 'rb'))
+        if (id < len(requestList)):
+            targetRequest = requestList[id]
+            ConsoleStr.violet(targetRequest.raw)
+            print()
