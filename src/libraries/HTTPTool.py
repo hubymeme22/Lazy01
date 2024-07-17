@@ -47,8 +47,9 @@ to storage, this class can be used to save, load, and track
 routes that are saved
 '''
 class HTTPMapper:
-    def __init__(self, unique: bool=False) -> None:
+    def __init__(self, unique: bool=False, verbose: bool=False) -> None:
         self.fname = f'cache/{uuid.uuid4().hex}.cache'
+        self.verbose = verbose
         self.uniqueFlag = unique
         self.pathMap = {}
 
@@ -76,17 +77,32 @@ class HTTPMapper:
     def export(self, filename: str):
         os.replace(self.fname, filename)
 
-    def showSummary(self, filename: str, filter=''):
+    def packetLoad(self, filename: str, filter='') -> list[SimpleHTTPRequestParser]:
+        self.verbose and print('[*] Loading packets from', filename)
         requestList: list[SimpleHTTPRequestParser] = pickle.load(open(filename, 'rb'))
-        for id, request in enumerate(requestList):
-            if (filter == ''):
-                ConsoleStr.violet(f'[Request id={id}] {request.method} {request.path}')
-                continue
-            (request.method == filter) and ConsoleStr.violet(f'[Request id={id}] {request.method} {request.path}')
+        filteredRequest = []
+        for request in requestList:
+            (request.method == filter or filter == '') and filteredRequest.append(request)
 
-    def showPacketDetail(self, filename: str, id: int):
-        requestList: list[SimpleHTTPRequestParser] = pickle.load(open(filename, 'rb'))
+        self.verbose and ConsoleStr.green(f'[+] Loaded {len(filteredRequest)} packet(s)')
+        return filteredRequest
+
+    def showSummary(self, requestList: list[SimpleHTTPRequestParser]):
+        print()
+        ConsoleStr.green('========================================')
+        ConsoleStr.green(f'{len(requestList)} Packet(s) retrieved:')
+        ConsoleStr.green('========================================')
+
+        for id, request in enumerate(requestList):
+            ConsoleStr.violet(f'[Request id={id}] {request.method} {request.path}')
+        print()
+
+    def showPacketDetail(self, requestList: list[SimpleHTTPRequestParser], id: int):
         if (id < len(requestList)):
+            print()
+            ConsoleStr.green('========================================')
+            ConsoleStr.green(f'Packet detail for id={id}')
+            ConsoleStr.green('========================================')
             targetRequest = requestList[id]
             ConsoleStr.violet(targetRequest.raw)
             print()

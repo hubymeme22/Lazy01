@@ -4,7 +4,8 @@ APP_DESCRIPTION = 'This app is a simple app for intercepting and analyzing API e
 VERBOSE_DESCRIPTION = 'Increase the console output verbosity'
 INTERCEPT_DESCRIPTION = 'Starts interception of HTTP packets on specified port'
 UNIQUE_DESCRIPTION = 'Ignores the same http requests'
-PACKET_SUMMARY_DESCRIPTION = 'Prints the summary of the saved packet'
+PACKET_LOAD_DESCRIPTION = 'Loads the saved recorded packets'
+PACKET_SUMMARY_DESCRIPTION = 'Summarizes the loaded packets'
 PACKET_METHOD_DESCRIPTION = 'Filters method from packet summary'
 PACKET_READ_DESCRIPTION = 'Reads the specific contents of the packet'
 init()

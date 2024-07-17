@@ -18,17 +18,17 @@ class Lazy01:
             Interceptor = HTTPInterceptor(self.args.intercept, verbose=self.args.verbose, unique=self.args.unique)
             Interceptor.intercept()
 
-        elif (self.args.packet_summary):
-            ConsoleStr.green('=================================')
-            ConsoleStr.green('Packet(s) retrieved:')
-            ConsoleStr.green('=================================')
+        elif (self.args.packet_load):
+            Mapper = HTTPMapper(verbose=self.args.verbose)
+            loadedPackets = Mapper.packetLoad(self.args.packet_load, filter=self.args.packet_method)
 
-            Mapper = HTTPMapper()
-            if (not self.args.packet_read):
-                Mapper.showSummary(self.args.packet_summary, filter=self.args.packet_method)
-            else:
-                Mapper.showPacketDetail(self.args.packet_summary, self.args.packet_read)
+            if (self.args.packet_summary):
+                Mapper.showSummary(loadedPackets)
+
+            if (self.args.packet_read >= 0):
+                Mapper.showPacketDetail(loadedPackets, self.args.packet_read)
             print('[*] Done.')
+            print()
 
         else:
             print('usage: lazy01.py [options]')
@@ -42,11 +42,15 @@ def start():
 
     ArgParser.add_argument('-u', '--unique', action='store_true', help=UNIQUE_DESCRIPTION)
     ArgParser.add_argument('-v', '--verbose', action='store_true', help=VERBOSE_DESCRIPTION)
-
     ArgParser.add_argument('-i', '--intercept', type=int, default=None, help=INTERCEPT_DESCRIPTION)
-    ArgParser.add_argument('-pS', '--packet-summary', metavar='FILE_PATH', type=str, help=PACKET_SUMMARY_DESCRIPTION)
+
+    # packet actions
+    ArgParser.add_argument('-pL', '--packet-load', metavar='FILE_PATH', type=str, help=PACKET_LOAD_DESCRIPTION)
     ArgParser.add_argument('-pM', '--packet-method', metavar='HTTP_METHOD', type=str, default='', help=PACKET_METHOD_DESCRIPTION)
-    ArgParser.add_argument('-pR', '--packet-read', metavar='SUMMARY_ID', type=int , default=0, help=PACKET_METHOD_DESCRIPTION)
+    ArgParser.add_argument('-pR', '-pD', '--packet-read', metavar='PACKET_ID', type=int , default=-1, help=PACKET_METHOD_DESCRIPTION)
+    ArgParser.add_argument('-pS', '--packet-summary', action='store_true', help=PACKET_SUMMARY_DESCRIPTION)
+
+    # test actions
 
     arguments = ArgParser.parse_args()
     Lazy01(arguments).execute()
