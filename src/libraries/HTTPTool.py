@@ -1,6 +1,7 @@
 from .Strings import ConsoleStr
 import pathlib
 import pickle
+import json
 import uuid
 import os
 
@@ -16,6 +17,7 @@ class SimpleHTTPRequestParser:
         self.method = ''
         self.host = ''
         self.path = ''
+        self.data = None
         self.header = {}
 
         try:
@@ -36,6 +38,11 @@ class SimpleHTTPRequestParser:
                 self.header.update({
                     headerKeyValue[0]: headerKeyValue[1]
                 })
+
+            # data values
+            if (requestDetails[-1] != ''): self.data = requestDetails[-1]
+            else: self.data = None
+
         except Exception as e:
             self.errorFlag = e
 
@@ -52,6 +59,8 @@ class HTTPMapper:
         self.verbose = verbose
         self.uniqueFlag = unique
         self.pathMap = {}
+
+        verbose and unique and ConsoleStr.green('[*] Unique flag is on (saving unique routes only)')
 
     def directCache(self, request: SimpleHTTPRequestParser):
         pathlib.Path(self.fname).touch()
@@ -104,5 +113,11 @@ class HTTPMapper:
             ConsoleStr.green(f'Packet detail for id={id}')
             ConsoleStr.green('========================================')
             targetRequest = requestList[id]
-            ConsoleStr.violet(targetRequest.raw)
+            # ConsoleStr.violet(targetRequest.raw)
+            ConsoleStr.yellow(f'{targetRequest.method} {targetRequest.path}')
+            for key in targetRequest.header.keys():
+                ConsoleStr.blue(f'{key}: {targetRequest.header.get(key)}')
+            
+            if (targetRequest.data != None):
+                ConsoleStr.violet(targetRequest.data)
             print()
