@@ -9,6 +9,9 @@ PACKET_SUMMARY_DESCRIPTION = 'Summarizes the loaded packets'
 PACKET_METHOD_DESCRIPTION = 'Filters method from the packet loaded'
 PACKET_READ_DESCRIPTION = 'Reads the specific contents of the packet'
 TEST_REPEAT_DESCRIPTION = 'Tests all the loaded packets and repeats the request'
+SET_BEARER_DESCRIPTION = 'Sets one or multiple bearer token value(s) to be tested separated by comma (ex. token1,token2,token3,...).'
+GET_BEARER_DESCRIPTION = 'Retrieves all the bearer tokens in a session'
+AUTO_BEARER_DESCRIPTION = 'Automatically retrieve all the bearer tokens and sets for testing'
 
 init()
 class ConsoleStr:

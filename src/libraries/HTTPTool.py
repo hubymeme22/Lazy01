@@ -121,3 +121,24 @@ class HTTPMapper:
             if (targetRequest.data != None):
                 ConsoleStr.violet(targetRequest.data)
             print()
+
+class HTTPDetailExtractor:
+    def extractBearer(requestList: list[SimpleHTTPRequestParser], verbose: bool=False):
+        retrievedKeys = []
+        verbose and print('[*] Retrieving all unique bearer tokens...')
+        for request in requestList:
+            # safe logic for changing header keys since there are
+            # cases where Authorization is in camelcase/lowercase/all-caps
+            headerKeys = list(request.header.keys())
+            matchHeader = [key.lower() for key in headerKeys]
+            if ('authorization' in matchHeader):
+                matchId = matchHeader.index('authorization')
+                actualKey = headerKeys[matchId]
+                bearerToken = ' '.join(request.header[actualKey].split(' ')[1:])
+
+                if (bearerToken not in retrievedKeys):
+                    verbose and ConsoleStr.green(f'[BearerToken] Retrieved token: {bearerToken}')
+                    retrievedKeys.append(bearerToken)
+
+        verbose and print(f'[+] Retrieved {len(retrievedKeys)} bearer tokens')
+        return retrievedKeys

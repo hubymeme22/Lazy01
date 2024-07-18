@@ -3,8 +3,9 @@ from .Strings import ConsoleStr
 import requests as req
 
 class HTTPRepeaterTest:
-    def __init__(self, requestList: list[SimpleHTTPRequestParser], verbose: bool=False):
+    def __init__(self, requestList: list[SimpleHTTPRequestParser], bearerTokens: list[str]=[], verbose: bool=False):
         self.requestList = requestList
+        self.bearerTokens = bearerTokens
 
     def statusCodePrint(self, statusCode: int):
         if (200 <= statusCode <= 299):
@@ -16,10 +17,7 @@ class HTTPRepeaterTest:
         else:
             ConsoleStr.blue(str(statusCode))
 
-    def forwardAll(self, filter=''):
-        ConsoleStr.green('========================================')
-        ConsoleStr.green('Packet Repeater test')
-        ConsoleStr.green('========================================')
+    def forwarder(self):
         for id, request in enumerate(self.requestList):
             try:
                 if (request.method == 'GET'):
@@ -40,3 +38,36 @@ class HTTPRepeaterTest:
 
             except Exception as e:
                 print(e)
+
+    def forwardAll(self):
+        ConsoleStr.green('========================================')
+        ConsoleStr.green('Packet Repeater test')
+        ConsoleStr.green('========================================')
+        self.forwarder()
+
+    def forwaredAllWithBearer(self):
+        # assigning authorization value for each test
+        for bearerToken in self.bearerTokens:
+            for rid, request in enumerate(self.requestList):
+
+                # safe logic for changing header keys since there are
+                # cases where Authorization is in camelcase/lowercase/all-caps
+                headerKeys = list(request.header.keys())
+                matchHeader = [key.lower() for key in headerKeys]
+                if ('authorization' in matchHeader):
+                    matchId = matchHeader.index('authorization')
+                    actualKey = headerKeys[matchId]
+                    self.requestList[rid].header[actualKey] = f'Bearer {bearerToken}'
+
+            # we proceed on overall testing for each bearer tokens
+            ConsoleStr.green('\n========================================')
+            ConsoleStr.green('Packet Repeater test for token:')
+            ConsoleStr.green(f'{bearerToken}')
+            ConsoleStr.green('========================================')
+            self.forwarder()
+
+    def forward(self):
+        if (len(self.bearerTokens) > 0):
+            self.forwaredAllWithBearer()
+        else:
+            self.forwardAll()

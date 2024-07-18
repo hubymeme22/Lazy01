@@ -1,5 +1,6 @@
 from .libraries.Strings import *
 from .libraries.HTTPInterceptor import HTTPInterceptor, HTTPMapper
+from .libraries.HTTPTool import HTTPDetailExtractor
 from .libraries.HTTPTests import HTTPRepeaterTest
 
 import argparse
@@ -22,19 +23,31 @@ class Lazy01:
         elif (self.args.packet_load):
             Mapper = HTTPMapper(verbose=self.args.verbose)
             loadedPackets = Mapper.packetLoad(self.args.packet_load, filter=self.args.packet_method)
+            bearerTokens = []
 
+            # different packet commands
             if (self.args.packet_summary):
                 Mapper.showSummary(loadedPackets)
 
             if (self.args.packet_read >= 0):
                 Mapper.showPacketDetail(loadedPackets, self.args.packet_read)
 
-            if (self.args.test_repeat):
-                Repeater = HTTPRepeaterTest(loadedPackets)
-                Repeater.forwardAll()
+            # different bearer commands
+            if (self.args.bearer_get):
+                HTTPDetailExtractor.extractBearer(loadedPackets, verbose=True)
+                return
 
-            print('[*] Done.')
-            print()
+            if (self.args.bearer_set):
+                bearerTokens = self.args.bearer_set.split(',')
+
+            # different testing methods
+            if (self.args.test_repeat):
+                Repeater = HTTPRepeaterTest(
+                    requestList=loadedPackets,
+                    bearerTokens=bearerTokens,
+                    verbose=self.args.verbose
+                )
+                Repeater.forward()
 
         else:
             print('usage: lazy01.py [options]')
@@ -59,8 +72,14 @@ def start():
     # test actions
     ArgParser.add_argument('-tR', '--test-repeat', action='store_true', help=TEST_REPEAT_DESCRIPTION)
 
+    # bearer tokens command
+    ArgParser.add_argument('-bS', '--bearer-set', type=str, metavar='BEARER_TOKENS', help=SET_BEARER_DESCRIPTION)
+    ArgParser.add_argument('-bG', '--bearer-get', action='store_true', help=GET_BEARER_DESCRIPTION)
+
     arguments = ArgParser.parse_args()
     Lazy01(arguments).execute()
+
+    print('[*] Done.', end='\n\n')
 
     # # test actions
     # ArgParser.add_argument('-tO', '--test-output')
@@ -71,7 +90,4 @@ def start():
     # ArgParser.add_argument('-fC', '--filter-code')
     # ArgParser.add_argument('-fE', '--filter-code')
 
-    # # modification actions
-    # ArgParser.add_argument('-sA', '--set-authority')
-    # ArgParser.add_argument('-sC', '--set-cookie')
-
+    # ArgParser.add_argument('-bA', '--bearer-auto', action='store_true', help=AUTO_BEARER_DESCRIPTION)
