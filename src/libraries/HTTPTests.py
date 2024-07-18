@@ -3,9 +3,10 @@ from .Strings import ConsoleStr
 import requests as req
 
 class HTTPRepeaterTest:
-    def __init__(self, requestList: list[SimpleHTTPRequestParser], bearerTokens: list[str]=[], verbose: bool=False):
+    def __init__(self, requestList: list[SimpleHTTPRequestParser], bearerTokens: list[str]=[], statusFilter: bool=False):
         self.requestList = requestList
         self.bearerTokens = bearerTokens
+        self.statusFilter = statusFilter
 
     def statusCodePrint(self, statusCode: int):
         if (200 <= statusCode <= 299):
@@ -22,15 +23,14 @@ class HTTPRepeaterTest:
             try:
                 if (request.method == 'GET'):
                     response = req.get(f'http://{request.host}{request.path}', headers=request.header)
-                    ConsoleStr.violet(f'[Repeater Test id={id}] Endpoint: {request.path}', end=' |>>> ')
-                    self.statusCodePrint(response.status_code)
+                    (str(response.status_code) in self.statusFilter) and ConsoleStr.violet(f'[Repeater Test id={id}] Endpoint: {request.path}', end=' |>>> ')
+                    (str(response.status_code) in self.statusFilter) and self.statusCodePrint(response.status_code)
                     continue
 
                 if (request.method == 'DELETE'):
                     response = req.delete(request.path, headers=request.header)
-                    ConsoleStr.violet('[*] Response Status code:', end=' ')
-                    self.statusCodePrint(response.status_code)
-                    print()
+                    (str(response.status_code) in self.statusFilter) and ConsoleStr.violet('[*] Response Status code:', end=' ')
+                    (str(response.status_code) in self.statusFilter) and self.statusCodePrint(response.status_code)
                     continue
 
                 if (request.method == 'POST' or request.method == 'PUT'):
