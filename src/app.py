@@ -48,7 +48,8 @@ class Lazy01:
                 Repeater = HTTPRepeaterTest(
                     requestList=loadedPackets,
                     bearerTokens=bearerTokens,
-                    statusFilter=self.args.test_status.split(',')
+                    statusFilter=self.args.test_status,
+                    verbose=self.args.verbose
                 )
                 Repeater.forward()
 
@@ -74,7 +75,7 @@ def start():
 
     # test actions
     ArgParser.add_argument('-tR', '--test-repeat', action='store_true', help=TEST_REPEAT_DESCRIPTION)
-    ArgParser.add_argument('-tS', '--test-status', metavar='HTTP_STATUS', help=TEST_STATUS_DESCRIPTION)
+    ArgParser.add_argument('-tS', '--test-status', metavar='HTTP_STATUS', default='', help=TEST_STATUS_DESCRIPTION)
 
     # bearer tokens command
     ArgParser.add_argument('-bA', '--bearer-auto', action='store_true', help=AUTO_BEARER_DESCRIPTION)
