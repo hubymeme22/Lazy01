@@ -1,7 +1,7 @@
 from .Strings import ConsoleStr
 import pathlib
 import pickle
-import json
+import glob
 import uuid
 import os
 
@@ -88,11 +88,24 @@ class HTTPMapper:
 
     def packetLoad(self, filename: str, filter='') -> list[SimpleHTTPRequestParser]:
         self.verbose and print('[*] Loading packets from', filename)
-        if (not os.path.isfile(filename)):
+        requestList: list[SimpleHTTPRequestParser] = []
+
+        if (os.path.isdir(filename)):
+            self.verbose and print('[*] Input detected as directory... finding all .bka files')
+            fileList = glob.iglob(os.path.join(filename, "*.bka"))
+
+            # loop to retrieve all files
+            for file in fileList:
+                if (os.path.isfile(file)):
+                    self.verbose and print(f'[+] Loading file: {file}')
+                    requestList += pickle.load(open(file, 'rb'))
+
+        elif (os.path.isfile(filename)):
+            requestList: list[SimpleHTTPRequestParser] = pickle.load(open(filename, 'rb'))
+        else:
             ConsoleStr.red(f'[-] The file specified: {filename} does not exist')
             exit()
 
-        requestList: list[SimpleHTTPRequestParser] = pickle.load(open(filename, 'rb'))
         filteredRequest = []
         for request in requestList:
             (request.method == filter or filter == '') and filteredRequest.append(request)
