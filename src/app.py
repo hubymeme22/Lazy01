@@ -37,6 +37,9 @@ class Lazy01:
                 HTTPDetailExtractor.extractBearer(loadedPackets, verbose=True)
                 return
 
+            if (self.args.bearer_auto):
+                bearerTokens = HTTPDetailExtractor.extractBearer(loadedPackets, verbose=True)
+
             if (self.args.bearer_set):
                 bearerTokens = self.args.bearer_set.split(',')
 
@@ -73,6 +76,7 @@ def start():
     ArgParser.add_argument('-tR', '--test-repeat', action='store_true', help=TEST_REPEAT_DESCRIPTION)
 
     # bearer tokens command
+    ArgParser.add_argument('-bA', '--bearer-auto', action='store_true', help='')
     ArgParser.add_argument('-bS', '--bearer-set', type=str, metavar='BEARER_TOKENS', help=SET_BEARER_DESCRIPTION)
     ArgParser.add_argument('-bG', '--bearer-get', action='store_true', help=GET_BEARER_DESCRIPTION)
 

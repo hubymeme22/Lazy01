@@ -88,6 +88,10 @@ class HTTPMapper:
 
     def packetLoad(self, filename: str, filter='') -> list[SimpleHTTPRequestParser]:
         self.verbose and print('[*] Loading packets from', filename)
+        if (not os.path.isfile(filename)):
+            ConsoleStr.red(f'[-] The file specified: {filename} does not exist')
+            exit()
+
         requestList: list[SimpleHTTPRequestParser] = pickle.load(open(filename, 'rb'))
         filteredRequest = []
         for request in requestList:
