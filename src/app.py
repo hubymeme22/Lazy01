@@ -49,6 +49,7 @@ class Lazy01:
                     requestList=loadedPackets,
                     bearerTokens=bearerTokens,
                     statusFilter=self.args.test_status,
+                    includePublic=self.args.test_public,
                     verbose=self.args.verbose
                 )
                 Repeater.forward()
@@ -77,6 +78,7 @@ def start():
     # test actions
     ArgParser.add_argument('-tR', '--test-repeat', action='store_true', help=TEST_REPEAT_DESCRIPTION)
     ArgParser.add_argument('-tS', '--test-status', metavar='HTTP_STATUS', default='', help=TEST_STATUS_DESCRIPTION)
+    ArgParser.add_argument('-tP', '--test-public', action='store_true', help=TEST_PUBLIC_DESCRIPTION)
 
     # bearer tokens command
     ArgParser.add_argument('-bA', '--bearer-auto', action='store_true', help=AUTO_BEARER_DESCRIPTION)

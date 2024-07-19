@@ -6,12 +6,15 @@ class HTTPRepeaterTest:
     def __init__(self,
         requestList: list[SimpleHTTPRequestParser],
         bearerTokens: list[str]=[],
-        statusFilter: bool=[],
+        statusFilter: list=[],
+        includePublic: bool=False,
         verbose: bool=False):
             self.requestList = requestList
             self.bearerTokens = bearerTokens
             self.verbose = verbose
             self.statusFilter = statusFilter
+
+            if (includePublic): self.bearerTokens.append('')
 
     def statusCodePrint(self, statusCode: int):
         if (200 <= statusCode <= 299):
