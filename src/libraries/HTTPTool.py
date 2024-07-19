@@ -3,6 +3,7 @@ import pathlib
 import pickle
 import glob
 import uuid
+import json
 import os
 
 '''
@@ -18,6 +19,7 @@ class SimpleHTTPRequestParser:
         self.host = ''
         self.path = ''
         self.data = None
+        self.dataType = None
         self.header = {}
 
         try:
@@ -40,11 +42,16 @@ class SimpleHTTPRequestParser:
                 })
 
             # data values
-            if (requestDetails[-1] != ''): self.data = requestDetails[-1]
+            if (requestDetails[-1] != ''): self.data = self.extractJsonContent(requestDetails[-1])
             else: self.data = None
+            self.dataType = type(self.data)
 
         except Exception as e:
             self.errorFlag = e
+
+    def extractJsonContent(self, requestBody: str) -> str | dict:
+        try: return json.loads(requestBody)
+        except: return requestBody
 
 '''
 HTTPMapper
