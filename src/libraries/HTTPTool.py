@@ -67,6 +67,13 @@ class HTTPMapper:
         pickle.dump([request], open(self.fname, 'wb'))
         self.pathMap[request.method + request.path] = True
 
+    def directBulkCache(self, requestList: list[SimpleHTTPRequestParser]):
+        pathlib.Path(self.fname).touch()
+        pickle.dump(requestList, open(self.fname, 'wb'))
+
+        for request in requestList:
+            self.pathMap[request.method + request.path] = True
+
     def directAppendCache(self, request: SimpleHTTPRequestParser):
         requestList: list = pickle.load(open(self.fname, 'rb'))
         requestList.append(request)
@@ -83,7 +90,12 @@ class HTTPMapper:
         (os.path.isfile(self.fname)) and self.directAppendCache(request)
         (not os.path.isfile(self.fname)) and self.directCache(request)
 
-    def export(self, filename: str):
+    def export(self, filename: str, resumepath: str=''):
+        if (resumepath != '' and os.path.isfile(resumepath)):
+            packet1 = self.packetLoad(self.fname)
+            packet2 = self.packetLoad(resumepath)
+            self.directBulkCache(packet1 + packet2)
+
         os.replace(self.fname, filename)
 
     def packetLoad(self, filename: str, filter='') -> list[SimpleHTTPRequestParser]:

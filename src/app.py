@@ -18,7 +18,7 @@ class Lazy01:
 
             # start intercepting http traffic
             Interceptor = HTTPInterceptor(self.args.intercept, verbose=self.args.verbose, unique=self.args.unique)
-            Interceptor.intercept()
+            Interceptor.intercept(resumePath=self.args.packet_continue)
 
         elif (self.args.packet_load):
             Mapper = HTTPMapper(verbose=self.args.verbose)
@@ -68,6 +68,7 @@ def start():
     ArgParser.add_argument('-i', '--intercept', type=int, default=None, help=INTERCEPT_DESCRIPTION)
 
     # packet actions
+    ArgParser.add_argument('-pC', '--packet-continue', '--packet-resume', metavar='FILE_PATH', type=str, default='', help=PACKET_CONTINUE_DESCRIPTION)
     ArgParser.add_argument('-pL', '--packet-load', metavar='FILE_PATH', type=str, help=PACKET_LOAD_DESCRIPTION)
     ArgParser.add_argument('-pM', '--packet-method', metavar='HTTP_METHOD', type=str, default='', help=PACKET_METHOD_DESCRIPTION)
     ArgParser.add_argument('-pR', '-pD', '--packet-read', metavar='PACKET_ID', type=int , default=-1, help=PACKET_READ_DESCRIPTION)

@@ -29,7 +29,7 @@ class HTTPInterceptor:
     def targetCheck(self, httpPacket: Packet):
         return httpPacket[TCP].dport == self.port
 
-    def intercept(self):
+    def intercept(self, resumePath: str=''):
         ConsoleStr.green(f'[+] Started HTTP Traffic interception for port: {self.port}')
         print('Press CTRL + c to stop intercepting...', end='\n\n')
         sniff(iface='lo', filter='tcp', prn=self.__callbackTemplate)
@@ -45,7 +45,7 @@ class HTTPInterceptor:
             fileName = input('Enter filename (*.bka) : ')
             if (len(fileName.split('.')) <= 1):
                 fileName += '.bka'
-                self.httpPacketState.export(fileName)
+                self.httpPacketState.export(fileName, resumePath)
             ConsoleStr.green(f'[+] Saved as {fileName}', end='\n\n')
         else:
             ConsoleStr.yellow('[*] Quitting...')
