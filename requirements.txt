@@ -1,3 +1,4 @@
 argparser
 requests
+python-dotenv
 scapy

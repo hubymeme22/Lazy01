@@ -17,7 +17,12 @@ class Lazy01:
                 exit()
 
             # start intercepting http traffic
-            Interceptor = HTTPInterceptor(self.args.intercept, verbose=self.args.verbose, unique=self.args.unique)
+            Interceptor = HTTPInterceptor(
+                self.args.intercept,
+                verbose=self.args.verbose,
+                unique=self.args.unique,
+                output=self.args.output
+            )
             Interceptor.intercept(resumePath=self.args.packet_continue)
 
         elif (self.args.packet_load):
@@ -28,7 +33,6 @@ class Lazy01:
                 filter=self.args.packet_method,
                 forward=self.args.forward
             )
-
 
             # different packet commands
             if (self.args.packet_summary):
@@ -69,10 +73,11 @@ def start():
 
     ArgParser = argparse.ArgumentParser(description=APP_DESCRIPTION)
 
+    ArgParser.add_argument('-f', '--forward', type=str, default='', help=FORWARD_DESCRIPTION)
+    ArgParser.add_argument('-o', '--output', type=str, default='', help=OUTPUT_DESCRIPTION)
     ArgParser.add_argument('-u', '--unique', action='store_true', help=UNIQUE_DESCRIPTION)
     ArgParser.add_argument('-v', '--verbose', action='store_true', help=VERBOSE_DESCRIPTION)
     ArgParser.add_argument('-i', '--intercept', type=int, default=None, help=INTERCEPT_DESCRIPTION)
-    ArgParser.add_argument('-f', '--forward', type=str, default='', help=FORWARD_DESCRIPTION)
 
     # packet actions
     ArgParser.add_argument('-pC', '--packet-continue', '--packet-resume', metavar='FILE_PATH', type=str, default='', help=PACKET_CONTINUE_DESCRIPTION)

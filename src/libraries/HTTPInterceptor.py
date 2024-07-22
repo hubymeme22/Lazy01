@@ -5,10 +5,16 @@ from scapy.layers.inet6 import IPv6
 from .HTTPTool import SimpleHTTPRequestParser, HTTPMapper
 from .Strings import ConsoleStr
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 # A simple class for intercepting http packets
 class HTTPInterceptor:
-    def __init__(self, port: int, verbose: bool=False, unique: bool=False) -> None:
+    def __init__(self, port: int, output: str='', verbose: bool=False, unique: bool=False) -> None:
         self.httpPacketState = HTTPMapper(unique)
+        self.output = output
         self.verbose = verbose
         self.port = port
         self.count = 1
@@ -32,9 +38,14 @@ class HTTPInterceptor:
     def intercept(self, resumePath: str=''):
         ConsoleStr.green(f'[+] Started HTTP Traffic interception for port: {self.port}')
         print('Press CTRL + c to stop intercepting...', end='\n\n')
-        sniff(iface='lo', filter='tcp', prn=self.__callbackTemplate)
+        sniff(iface=os.getenv('INTERFACE'), filter='tcp', prn=self.__callbackTemplate)
 
         ConsoleStr.blue('\n[*] Intercepting stopped...')
+        if (self.output != ''):
+            self.httpPacketState.export(self.output, resumePath)
+            ConsoleStr.green(f'[+] Saved as {self.output}', end='\n\n')
+            return
+
         sessionSave = ''
         while True:
             sessionSave = input('Save as new session? [y/N]: ')
