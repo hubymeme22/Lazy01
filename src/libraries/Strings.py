@@ -3,6 +3,7 @@ from colorama import init, Fore, Style
 APP_DESCRIPTION = 'This app is a simple app for intercepting and analyzing API endpoints for scanning A01:2021 OWASP\'s Broken Authentication common vulnerability'
 VERBOSE_DESCRIPTION = 'Increase the console output verbosity'
 INTERCEPT_DESCRIPTION = 'Starts interception of HTTP packets on specified port'
+FORWARD_DESCRIPTION = 'Forwards the packet to the specified host'
 UNIQUE_DESCRIPTION = 'Ignores the same http requests'
 PACKET_LOAD_DESCRIPTION = 'Loads the saved recorded packets'
 PACKET_CONTINUE_DESCRIPTION = 'Continues the saved recorded packets'

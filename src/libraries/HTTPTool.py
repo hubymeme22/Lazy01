@@ -105,7 +105,7 @@ class HTTPMapper:
 
         os.replace(self.fname, filename)
 
-    def packetLoad(self, filename: str, filter='') -> list[SimpleHTTPRequestParser]:
+    def packetLoad(self, filename: str, filter: str='', forward: str='') -> list[SimpleHTTPRequestParser]:
         self.verbose and print('[*] Loading packets from', filename)
         requestList: list[SimpleHTTPRequestParser] = []
 
@@ -128,6 +128,8 @@ class HTTPMapper:
         filteredRequest = []
         for request in requestList:
             (request.method == filter or filter == '') and filteredRequest.append(request)
+            if (forward != ''):
+                request.host = forward
 
         self.verbose and ConsoleStr.green(f'[+] Loaded {len(filteredRequest)} packet(s)')
         return filteredRequest

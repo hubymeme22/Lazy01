@@ -21,9 +21,14 @@ class Lazy01:
             Interceptor.intercept(resumePath=self.args.packet_continue)
 
         elif (self.args.packet_load):
-            Mapper = HTTPMapper(verbose=self.args.verbose)
-            loadedPackets = Mapper.packetLoad(self.args.packet_load, filter=self.args.packet_method)
             bearerTokens = []
+            Mapper = HTTPMapper(verbose=self.args.verbose)
+            loadedPackets = Mapper.packetLoad(
+                self.args.packet_load,
+                filter=self.args.packet_method,
+                forward=self.args.forward
+            )
+
 
             # different packet commands
             if (self.args.packet_summary):
@@ -67,6 +72,7 @@ def start():
     ArgParser.add_argument('-u', '--unique', action='store_true', help=UNIQUE_DESCRIPTION)
     ArgParser.add_argument('-v', '--verbose', action='store_true', help=VERBOSE_DESCRIPTION)
     ArgParser.add_argument('-i', '--intercept', type=int, default=None, help=INTERCEPT_DESCRIPTION)
+    ArgParser.add_argument('-f', '--forward', type=str, default='', help=FORWARD_DESCRIPTION)
 
     # packet actions
     ArgParser.add_argument('-pC', '--packet-continue', '--packet-resume', metavar='FILE_PATH', type=str, default='', help=PACKET_CONTINUE_DESCRIPTION)
@@ -90,13 +96,7 @@ def start():
 
     print('[*] Done.', end='\n\n')
 
-    # # test actions
-    # ArgParser.add_argument('-tO', '--test-output')
-    # ArgParser.add_argument('-tA', '--test-specific')
-    # ArgParser.add_argument('-tv', '--test-verbose')
-
-    # # test filters
-    # ArgParser.add_argument('-fC', '--filter-code')
-    # ArgParser.add_argument('-fE', '--filter-code')
-
-    # ArgParser.add_argument('-bA', '--bearer-auto', action='store_true', help=AUTO_BEARER_DESCRIPTION)
+    # test actions
+    # TODO: automated login for credentials
+    # TODO: token names for labeling instead of showing tokens
+    # TODO: proxy for testing
