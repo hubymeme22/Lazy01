@@ -157,7 +157,10 @@ class HTTPMapper:
                 ConsoleStr.blue(f'{key}: {targetRequest.header.get(key)}')
             
             if (targetRequest.data != None):
-                ConsoleStr.violet(targetRequest.data)
+                if (targetRequest.dataType is dict):
+                    ConsoleStr.violet(json.dumps(targetRequest.data, indent=2))
+                else:
+                    ConsoleStr.violet(targetRequest.data)
             print()
 
 class HTTPDetailExtractor:
