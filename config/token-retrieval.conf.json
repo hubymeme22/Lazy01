@@ -1,0 +1,13 @@
+[
+    {
+        "name": "HubertSample",
+        "host": "http://localhost:8000",
+        "endpoint": "/api/auth/login",
+        "response-key": "token",
+        "type": "json",
+        "data": {
+            "username": "hubert-sample",
+            "password": "password@2024"
+        }
+    }
+]

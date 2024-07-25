@@ -2,6 +2,7 @@ from .libraries.Strings import *
 from .libraries.HTTPInterceptor import HTTPInterceptor, HTTPMapper
 from .libraries.HTTPTool import HTTPDetailExtractor
 from .libraries.HTTPTests import HTTPRepeaterTest
+from .auto.loadTokens import loadTokens
 
 import argparse
 import os
@@ -11,7 +12,10 @@ class Lazy01:
         self.args: argparse.Namespace = arguments
 
     def execute(self):
-        if (self.args.intercept):
+        if (self.args.retrieve_token):
+            loadTokens()
+
+        elif (self.args.intercept):
             if (os.geteuid() != 0):
                 ConsoleStr.red('[-] Make sure to run the app as root when calling "--intercept" option.', end='\n\n')
                 exit()
@@ -78,6 +82,7 @@ def start():
     ArgParser.add_argument('-u', '--unique', action='store_true', help=UNIQUE_DESCRIPTION)
     ArgParser.add_argument('-v', '--verbose', action='store_true', help=VERBOSE_DESCRIPTION)
     ArgParser.add_argument('-i', '--intercept', type=int, default=None, help=INTERCEPT_DESCRIPTION)
+    ArgParser.add_argument('-rT', '--retrieve-token', action='store_true', help=RETRIEVE_TOKEN)
 
     # packet actions
     ArgParser.add_argument('-pC', '--packet-continue', '--packet-resume', metavar='FILE_PATH', type=str, default='', help=PACKET_CONTINUE_DESCRIPTION)
