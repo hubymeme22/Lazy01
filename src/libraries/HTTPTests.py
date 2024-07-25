@@ -38,14 +38,29 @@ class HTTPRepeaterTest:
                     continue
 
                 if (request.method == 'DELETE'):
-                    response = req.delete(request.path, headers=request.header)
+                    response = req.delete(f'http://{request.host}{request.path}', headers=request.header)
                     if (str(response.status_code) in self.statusFilter or len(self.statusFilter) == 0):
                         ConsoleStr.violet(f'[Repeater DELETE Test id={id}] Endpoint: {request.path}', end=' |>>> ')
                         self.statusCodePrint(response.status_code)
                         (self.verbose) and ConsoleStr.blue(f'[Response id={id}] {response.text}')
                     continue
 
-                if (request.method == 'POST' or request.method == 'PUT'):
+                if (request.method == 'POST'):
+                    if (request.dataType is dict): response = req.post(f'http://{request.host}{request.path}', headers=request.header, json=request.data)
+                    else: response = req.post(f'http://{request.host}{request.path}', headers=request.header, data=request.data)
+                    if (str(response.status_code) in self.statusFilter or len(self.statusFilter) == 0):
+                        ConsoleStr.violet(f'[Repeater POST Test id={id}] Endpoint: {request.path}', end=' |>>> ')
+                        self.statusCodePrint(response.status_code)
+                        (self.verbose) and ConsoleStr.blue(f'[Response id={id}] {response.text}')
+                    continue
+
+                if (request.method == 'PUT'):
+                    if (request.dataType is dict): response = req.put(f'http://{request.host}{request.path}', headers=request.header, json=request.data)
+                    else: response = req.put(f'http://{request.host}{request.path}', headers=request.header, data=request.data)
+                    if (str(response.status_code) in self.statusFilter or len(self.statusFilter) == 0):
+                        ConsoleStr.violet(f'[Repeater PUT Test id={id}] Endpoint: {request.path}', end=' |>>> ')
+                        self.statusCodePrint(response.status_code)
+                        (self.verbose) and ConsoleStr.blue(f'[Response id={id}] {response.text}')
                     continue
 
             except Exception as e:
